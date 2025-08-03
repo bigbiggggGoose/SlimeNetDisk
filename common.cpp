@@ -169,10 +169,9 @@ void Common::writeWebInfo(QString ip, QString port, QString path){
 }
 
 QString Common::getStrMd5(QString str)
-{   //MD5 不可逆，适合密码校验
+{
     QByteArray arr;
     arr=QCryptographicHash::hash(str.toLocal8Bit(),QCryptographicHash::Md5);
-
     return arr.toHex();
 }
 
@@ -216,29 +215,7 @@ QString Common::getFileMd5(QString filePath){
     return md5.toHex();
 }
 
-QString Common::getBoundary(){
-    char randoms[]={
-        '0','1','2','3','4','5','6','7','8','9',
-        'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-        'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'
-    };
 
-    //随机种子
-    qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-
-    QString temp;
-    int len=strlen(randoms);
-    for(int i=0;i<16;i++){
-        int rand=qrand()%len;
-        temp[i]=randoms[rand];
-    }
-
-    qDebug()<<"temp:"<<temp;
-
-    QString boundary="------WebKitFormBoundary"+temp;
-
-    return boundary;
-}
 
 QNetworkAccessManager* Common::getNetworkAccessManager(){
     return manager;

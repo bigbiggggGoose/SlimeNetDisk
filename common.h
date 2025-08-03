@@ -58,8 +58,6 @@ public:
 
     QString getFileMd5(QString filePath);
 
-    QString getBoundary();
-
     void getFileTypeList();
 
     void writeRecord(QString user,QString fileName,QString code,QString path=RECORD_DIR);
