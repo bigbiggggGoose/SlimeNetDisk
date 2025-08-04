@@ -349,7 +349,7 @@ void LoginDialog::on_reg_button_2_clicked()
     QString ip=m_common->getConfValue("web_server","ip");
     QString port=m_common->getConfValue("web_server","port");
 
-    QString url=QString("http://%1:%2/reg").arg(ip).arg(port); //("http://192.168.168.128/reg");
+    QString url=QString("http://%1:%2/reg").arg(ip).arg(port); //("http://.../reg");
     request.setUrl(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,QVariant("application/json"));
 

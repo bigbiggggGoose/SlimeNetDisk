@@ -212,7 +212,7 @@ void MyFileWidget::getMyFileList(MyFileDisplay cmd){
     QString ip=m_common->getConfValue("web_server","ip");
     QString port=m_common->getConfValue("web_server","port");
 
-    //http:..192.168.52.139/myfiles?cmd=normal  -->/myfiles/list
+    //http:../myfiles?cmd=normal  -->/myfiles/list
 
     QString url =QString("http://%1:%2/myfiles/list").arg(ip).arg(port);
     request.setUrl(url);
@@ -375,7 +375,7 @@ QString op = (fileinfo->shareStatus==1 ? "取消分享" : "分享");
     QNetworkRequest request;
     QString ip=m_common->getConfValue("web_server","ip");
     QString port=m_common->getConfValue("web_server","port");
-    //http://192.168.52.139/dealfile?cmd=share  -->
+    //http://.../dealfile?cmd=share  -->
     QString url=QString("http://%1:%2/dealfile/toggle_share").arg(ip).arg(port);
     request.setUrl(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,QVariant("application/json"));
@@ -440,7 +440,7 @@ void MyFileWidget::deleteFile(FileInfo *fileinfo){
     QNetworkRequest request;
     QString ip=m_common->getConfValue("web_server","ip");
     QString port=m_common->getConfValue("web_server","port");
-    //http://192.168.52.139/dealfile?cmd=del  gai
+    //http://.../dealfile?cmd=del  gai
     QString url=QString("http://%1:%2/dealfile/del").arg(ip).arg(port);
     request.setUrl(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader,QVariant("application/json"));
