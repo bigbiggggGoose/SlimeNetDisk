@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FilePropertyInfoDialog</class>
+ <widget class="QDialog" name="FilePropertyInfoDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>521</width>
+    <height>368</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>属性</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>391</width>
+     <height>321</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="lbl_fileName">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>文件名称</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="val_fileName">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>文件名称</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="lbl_uploadUser">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>上传者</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="val_uploadUser">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>文件名称</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="lbl_uploadTime">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>上传时间</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QLabel" name="val_uploadTime">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>文件名称</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="lbl_fileSize">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>文件大小</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="1">
+     <widget class="QLabel" name="val_fileSize">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>文件名称</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="lbl_shareStatus">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>分享状态</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLabel" name="val_shareStatus">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>文件名称</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="lbl_download">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>下载地址</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QLabel" name="val_download">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>文件名称</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="lbl_pv">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>下载量</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="1">
+     <widget class="QLabel" name="val_pv">
+      <property name="styleSheet">
+       <string notr="true">font: 75 9pt &quot;Microsoft YaHei&quot;;</string>
+      </property>
+      <property name="text">
+       <string>文件名称</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
