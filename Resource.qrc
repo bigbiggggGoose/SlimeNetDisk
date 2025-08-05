@@ -1,0 +1,45 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resource/Image_slm.ico</file>
+        <file>Resource/slm.jpg</file>
+        <file>Resource/slm.ico</file>
+        <file>Resource/Egg.png</file>
+        <file>Resource/slm_cheer.png</file>
+        <file>Resource/slm_party.png</file>
+        <file>Resource/bgp1.jpg</file>
+        <file>Resource/bgp3.jpg</file>
+        <file>Resource/bgp4.jpg</file>
+        <file>Resource/TypeIcon/jpg.png</file>
+        <file>Resource/TypeIcon/unknown.png</file>
+        <file>Resource/TypeIcon/7z.png</file>
+        <file>Resource/TypeIcon/avi.png</file>
+        <file>Resource/TypeIcon/c.png</file>
+        <file>Resource/TypeIcon/cpp.png</file>
+        <file>Resource/TypeIcon/css.png</file>
+        <file>Resource/TypeIcon/csv.png</file>
+        <file>Resource/TypeIcon/dll.png</file>
+        <file>Resource/TypeIcon/doc.png</file>
+        <file>Resource/TypeIcon/exe.png</file>
+        <file>Resource/TypeIcon/gif.png</file>
+        <file>Resource/TypeIcon/html.png</file>
+        <file>Resource/TypeIcon/java.png</file>
+        <file>Resource/TypeIcon/js.png</file>
+        <file>Resource/TypeIcon/json.png</file>
+        <file>Resource/TypeIcon/md.png</file>
+        <file>Resource/TypeIcon/mp3.png</file>
+        <file>Resource/TypeIcon/mp4.png</file>
+        <file>Resource/TypeIcon/pdf.png</file>
+        <file>Resource/TypeIcon/png.png</file>
+        <file>Resource/TypeIcon/pptx.png</file>
+        <file>Resource/TypeIcon/py.gif</file>
+        <file>Resource/TypeIcon/rar.png</file>
+        <file>Resource/TypeIcon/shell.png</file>
+        <file>Resource/TypeIcon/sql.png</file>
+        <file>Resource/TypeIcon/txt.png</file>
+        <file>Resource/TypeIcon/wav.png</file>
+        <file>Resource/TypeIcon/xlsv.png</file>
+        <file>Resource/TypeIcon/xml.png</file>
+        <file>Resource/TypeIcon/zip.png</file>
+        <file>Resource/2.jpg</file>
+    </qresource>
+</RCC>
