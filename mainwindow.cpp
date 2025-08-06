@@ -4,6 +4,7 @@
 #include<QMouseEvent>
 #include <QPushButton>
 #include <QSizePolicy>
+#include<QTimer>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -26,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent)
     //设置默认：
     m_currentSelectedButton = ui->MyFile;
     ui->MyFile->setSelected(true);
+
     // 连接按钮点击信号
     connect(ui->MyFile, &MyPushButton::clicked, this, &MainWindow::onButtonClicked);
     connect(ui->Share, &MyPushButton::clicked, this, &MainWindow::onButtonClicked);
@@ -38,6 +40,24 @@ MainWindow::MainWindow(QWidget *parent)
         ui->stackedWidget->setCurrentWidget(ui->transform_page);
         ui->transform_page->showPage(status);
     });
+
+
+    // 将按钮从布局中移除，使其可以自由移动
+    QTimer::singleShot(100, this, [this]() {
+        // 从布局中移除按钮
+        if (ui->minimize->parent()) {
+            ui->minimize->setParent(this);
+        }
+        if (ui->maximize->parent()) {
+            ui->maximize->setParent(this);
+        }
+        if (ui->close_button->parent()) {
+            ui->close_button->setParent(this);
+        }
+
+        // 初始化按钮位置
+        updateButtonPositions();
+});
 }
 
 
@@ -116,4 +136,37 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event){
 
 void MainWindow::setUser(QString user){
     ui->User->setText(user);
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    updateButtonPositions();
+}
+
+void MainWindow::updateButtonPositions()
+{
+    // 获取按钮尺寸
+    int btnWidth = ui->close_button->width();
+    int btnHeight = ui->close_button->height();
+    int spacing = 2; // 按钮之间的间隔
+
+    // 计算右上角位置
+    int x = this->width() - btnWidth-20;
+    int y = 0+20;
+
+    // 移动按钮到右上角
+    ui->close_button->move(x, y);
+    ui->close_button->raise(); // 确保按钮在最上层
+    ui->close_button->show(); // 确保按钮可见
+
+    x -= (btnWidth + spacing);
+    ui->maximize->move(x, y);
+    ui->maximize->raise();
+    ui->maximize->show();
+
+    x -= (btnWidth + spacing);
+    ui->minimize->move(x, y);
+    ui->minimize->raise();
+    ui->minimize->show();
 }
