@@ -29,18 +29,19 @@ UploadTask& UploadTask::operator=(const UploadTask&a){
 }
 */
 int UploadTask::appendUploadTask(QString filePath){
-
-    qint64 fileSize=QFileInfo(filePath).size();
+    QFileInfo fileInfo(filePath);
+    qint64 fileSize=fileInfo.size();
     if(fileSize>40*1024*1024){
-    qDebug()<<"文件太大，max:40M";//改成40M了
+    qDebug()<<"文件太大，max:40M";
     return -1;
     }
 
     UploadFileInfo *uploadFile=new UploadFileInfo;
 
     //截取字符串
-    int pos=filePath.lastIndexOf("/",-1)+1;//从字符串末尾开始查找最后一个"/"的位置 +1跳过斜杠
-    uploadFile->fileName=filePath.mid(pos);//mid从pos截取到末尾
+//    int pos=filePath.lastIndexOf("/",-1)+1;//从字符串末尾开始查找最后一个"/"的位置 +1跳过斜杠
+//    uploadFile->fileName=filePath.mid(pos);//mid从pos截取到末尾
+    uploadFile->fileName = fileInfo.fileName();//这里改用qfileinfo获取filename
     uploadFile->filePath=filePath;
     uploadFile->size=fileSize;
     uploadFile->md5=Common::getInstance()->getFileMd5(filePath);

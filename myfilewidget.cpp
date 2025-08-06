@@ -47,6 +47,33 @@ MyFileWidget::MyFileWidget(QWidget *parent) :
 
 MyFileWidget::~MyFileWidget()
 {
+    // 停止定时器
+    m_timer.stop();
+    m_timerForDownload.stop();
+
+    // 清理任务对象
+    if(m_uploadTask) {
+        delete m_uploadTask;
+        m_uploadTask = nullptr;
+    }
+    if(m_downloadTask) {
+        delete m_downloadTask;
+        m_downloadTask = nullptr;
+    }
+
+    // 清理菜单对象
+    if(m_inmenu) {
+        delete m_inmenu;
+        m_inmenu = nullptr;
+    }
+    if(m_exmenu) {
+        delete m_exmenu;
+        m_exmenu = nullptr;
+    }
+
+    // 清理文件列表
+    clearFileList();
+
     delete ui;
 }
 
@@ -575,7 +602,7 @@ void MyFileWidget::uploadFile(UploadFileInfo* info) {
      QString ip=m_common->getConfValue("web_server","ip");
      QString port=m_common->getConfValue("web_server","port");
 
-//     QString url=QString("http://%1:%2/...").arg(ip).arg(port);
+
 
      QNetworkRequest req(QUrl(
          QString("http://%1:%2/upload").arg(ip).arg(port)
@@ -585,12 +612,11 @@ void MyFileWidget::uploadFile(UploadFileInfo* info) {
 
 
      //显示进度条
-//     connect(reply,&QNetworkReply::uploadProgress,this,[=](qint64 bytesSent,qint64 bytesTotal){
-//         //bytesSent上传字节数 bytesTotal总字节数
+     connect(reply,&QNetworkReply::uploadProgress,this,[=](qint64 bytesSent,qint64 bytesTotal){
+         //bytesSent上传字节数 bytesTotal总字节数
 
-
-//         info->fileProgress->setProgress(bytesSent/1024,bytesTotal/1024);
-//     });
+         info->fileProgress->setProgress(bytesSent/1024,bytesTotal/1024);
+     });
 
 
 
@@ -834,7 +860,7 @@ void MyFileWidget::showFileItems(){
                icon = QIcon(pix);
                } else {    // 加载失败就使用 unknown.png
            icon = QIcon(":/Resource/TypeIcon/unknown.png");
-           qDebug() << "icon does not exist, fallback to unknown:" << filePath;
+
        }
 
        // 添加到 listWidget

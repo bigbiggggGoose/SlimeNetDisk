@@ -16,10 +16,14 @@ Common::Common()
 {
 manager=new QNetworkAccessManager(this);
 getFileTypeList();
-
-
 }
-
+Common::~Common()
+{
+    if(manager) {
+        delete manager;
+        manager = nullptr;
+    }
+}
 Common *Common::getInstance(){
     if (m_instance == nullptr) {
             m_instance = new Common();

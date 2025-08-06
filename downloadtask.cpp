@@ -9,8 +9,19 @@ DownloadTask::DownloadTask()
 }
 DownloadTask:: ~DownloadTask(){
    for(int i=0;i<m_fileList.length();i++){
-       if(m_fileList.at(i)!=nullptr)
-       delete m_fileList.at(i);
+       if(m_fileList.at(i)!=nullptr) {
+           // 先关闭并删除文件对象
+           if(m_fileList.at(i)->file) {
+               m_fileList.at(i)->file->close();
+               delete m_fileList.at(i)->file;
+           }
+           // 删除进度条
+           if(m_fileList.at(i)->fileProgress) {
+               delete m_fileList.at(i)->fileProgress;
+           }
+           // 删除DownloadFileInfo对象
+           delete m_fileList.at(i);
+       }
    }
 
 }
@@ -77,8 +88,10 @@ void DownloadTask::delDownloadTask(){
         delete DownloadFileInfo->fileProgress;
 
         QFile *file=DownloadFileInfo->file;
-        file->close();
-        delete file;
+        if(file) {
+                file->close();
+                delete file;
+            }
 
         delete DownloadFileInfo;
     }

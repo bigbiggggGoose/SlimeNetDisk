@@ -33,7 +33,8 @@ enum TransmitStatus{
 class Common: public QObject
 {
 private:
-    Common();//唯一
+     Common();
+     ~Common();
      static Common * m_instance;
      QNetworkAccessManager *manager;
      QStringList m_FileTypeList;

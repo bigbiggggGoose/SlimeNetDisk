@@ -22,13 +22,11 @@ struct UploadFileInfo{
 
 class UploadTask
 {
-    UploadTask *p;
+
     QList<UploadFileInfo*> m_fileList;
 public:
     UploadTask();
     ~UploadTask();
-    UploadTask(UploadTask*a);
-    UploadTask& operator=(const UploadTask&a);
     int appendUploadTask(QString filePath);
     bool isEmpty();
     UploadFileInfo* takeTask();
