@@ -4,6 +4,9 @@
 #include<QPainter>
 #include"layout.h"
 #include"LoginInfoInstance.h"
+#include<QFile>
+#include<QMessageBox>
+
 TransmissionWidget::TransmissionWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TransmissionWidget)
@@ -69,12 +72,35 @@ void TransmissionWidget::showPage(TransmitStatus status){
     }
 }
 
+void TransmissionWidget::clearRecordFile(QString path){
+    QString recordDir = path;
+    QString recordFilePath = recordDir + "/" + LoginInfoInstance::getInstance()->getUser() + ".txt";
 
-
-
-
+    QFile file(recordFilePath);
+    if (file.exists()) {
+        if (!file.remove()) {
+            qDebug() << "无法删除记录文件:" << recordFilePath;
+            QMessageBox::warning(this, "错误", "无法删除记录文件");
+            return;
+        }
+        qDebug() << "记录文件已删除:" << recordFilePath;
+    }
+}
 
 void TransmissionWidget::on_clear_clicked()
 {
-    ui->recordEdit->setText("");
+    // 弹出确认对话框
+    QMessageBox::StandardButton reply = QMessageBox::question(this, "确认清除",
+        "确定要清除所有传输记录吗？此操作不可恢复。",
+        QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+        // 清除界面显示
+        ui->recordEdit->setText("");
+
+        // 删除记录文件
+        clearRecordFile();
+
+        QMessageBox::information(this, "成功", "传输记录已清除");
+    }
 }

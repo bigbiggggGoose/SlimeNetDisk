@@ -12,9 +12,6 @@ class TransmissionWidget : public QWidget
 {
     Q_OBJECT
 
-
-
-
 public:
     explicit TransmissionWidget(QWidget *parent = nullptr);
     ~TransmissionWidget();
@@ -23,6 +20,7 @@ private:
     Ui::TransmissionWidget *ui;
 
     void dispayDataRecord(QString path=RECORD_DIR);
+    void clearRecordFile(QString path=RECORD_DIR);
 protected:
     void paintEvent(QPaintEvent *event);
 private slots:
