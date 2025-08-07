@@ -314,39 +314,38 @@ void MyFileWidget::addDownloadFiles(){
                                           fileInfo->fileName,
                                           "091");
                 }
-                else
-                if (!m_timerForDownload.isActive())
+                else if (!m_timerForDownload.isActive())
                        m_timerForDownload.start(500);
             }
         }
     }
 }
 
-void MyFileWidget::downloadFile(){//通过游览器下载文件的方式
-    QListWidgetItem* item = ui->listWidget->currentItem();
-     if (!item) {
-         QMessageBox::warning(this, "提示", "请先选中一个文件！");
-         return;
-     }
+//void MyFileWidget::downloadFile(){//通过游览器下载文件的方式
+//    QListWidgetItem* item = ui->listWidget->currentItem();
+//     if (!item) {
+//         QMessageBox::warning(this, "提示", "请先选中一个文件！");
+//         return;
+//     }
 
-     // 根据 item 获取对应的 fileInfo
-     int index = ui->listWidget->row(item);
-     if (index < 0 || index >= m_FileList.length()) {
-         QMessageBox::warning(this, "错误", "文件索引错误");
-         return;
-     }
+//     // 根据 item 获取对应的 fileInfo
+//     int index = ui->listWidget->row(item);
+//     if (index < 0 || index >= m_FileList.length()) {
+//         QMessageBox::warning(this, "错误", "文件索引错误");
+//         return;
+//     }
 
-     FileInfo* fileInfo = m_FileList.at(index);
-     QString url = fileInfo->url;
+//     FileInfo* fileInfo = m_FileList.at(index);
+//     QString url = fileInfo->url;
 
-     if (url.isEmpty()) {
-         QMessageBox::warning(this, "错误", "文件 URL 为空，无法下载！");
-         return;
-     }
+//     if (url.isEmpty()) {
+//         QMessageBox::warning(this, "错误", "文件 URL 为空，无法下载！");
+//         return;
+//     }
 
 
-     QDesktopServices::openUrl(QUrl(url));
-}
+//     QDesktopServices::openUrl(QUrl(url));
+//}
 
 void MyFileWidget::addUploadItem(){
     QString filePath=QString(":/Resource/2.jpg");
@@ -412,6 +411,7 @@ QString op = (fileinfo->shareStatus==1 ? "取消分享" : "分享");
 "filename":"Makefile",
 "md5":"????",
 "user":"hhh"
+"token":"jwt_token"
 }
 
 */
@@ -419,6 +419,7 @@ QString op = (fileinfo->shareStatus==1 ? "取消分享" : "分享");
     paramsObj.insert("filename",fileinfo->fileName);
     paramsObj.insert("md5",fileinfo->md5);
     paramsObj.insert("user",m_loginInfo->getUser());
+    paramsObj.insert("token",m_loginInfo->getToken());
     QJsonDocument doc(paramsObj);
 
     QByteArray data=doc.toJson();
@@ -449,11 +450,11 @@ QString op = (fileinfo->shareStatus==1 ? "取消分享" : "分享");
     fileinfo->shareStatus=0;
     QMessageBox::information(this,op,"取消分享成功");
     }
-//    else if(code=="013"){
-//        QMessageBox::critical(this,"账号异常","请重新登录");
-//        emit sigLoginAgain();
-//        return;
-//    }
+    else if(code=="111"){
+            QMessageBox::critical(this,"账号异常","请重新登录");
+            emit sigLoginAgain();
+            return;
+    }
 
 
     reply->deleteLater();
@@ -476,7 +477,7 @@ void MyFileWidget::deleteFile(FileInfo *fileinfo){
 {
 "filename":"Makefile",
 "md5":"????",
-"token":"?????????",
+"token":"...",
 "user":"hhh"
 }
 
@@ -485,6 +486,7 @@ void MyFileWidget::deleteFile(FileInfo *fileinfo){
     paramsObj.insert("filename",fileinfo->fileName);
     paramsObj.insert("md5",fileinfo->md5);
     paramsObj.insert("user",m_loginInfo->getUser());
+    paramsObj.insert("token",m_loginInfo->getToken());
     QJsonDocument doc(paramsObj);
 
     QByteArray data=doc.toJson();
@@ -501,6 +503,7 @@ void MyFileWidget::deleteFile(FileInfo *fileinfo){
     /*
     013:成功
     014：失败
+    111：token验证失败
     */
     if(code=="013"){
     QMessageBox::information(this,"delete sucessfully",fileinfo->fileName);
@@ -527,7 +530,11 @@ void MyFileWidget::deleteFile(FileInfo *fileinfo){
     }
     else if(code=="014"){
         QMessageBox::critical(this,"delete failed",fileinfo->fileName);
-
+    }
+    else if(code=="111"){
+           QMessageBox::critical(this,"账号异常","请重新登录");
+           emit sigLoginAgain();
+           return;
     }
       });
 }
@@ -570,8 +577,8 @@ void MyFileWidget::uploadFile(UploadFileInfo* info) {
         return;
     }
 
+    //MD5
     if (info->md5.isEmpty()) {
-           // 实现 getFileMd5() 函数计算文件 MD5
            info->md5 = Common::getInstance()->getFileMd5(info->filePath);
        }
 
@@ -590,7 +597,6 @@ void MyFileWidget::uploadFile(UploadFileInfo* info) {
      userPart.setBody(m_loginInfo->getUser().toUtf8());
      multi->append(userPart);
 
-
      // md5 part
      QHttpPart md5Part;
      md5Part.setHeader(QNetworkRequest::ContentDispositionHeader,
@@ -598,11 +604,15 @@ void MyFileWidget::uploadFile(UploadFileInfo* info) {
      md5Part.setBody(info->md5.toUtf8());
      multi->append(md5Part);
 
+     // token part
+     QHttpPart tokenPart;
+     tokenPart.setHeader(QNetworkRequest::ContentDispositionHeader,
+         "form-data; name=\"token\"");
+     tokenPart.setBody(m_loginInfo->getToken().toUtf8());
+     multi->append(tokenPart);
 
      QString ip=m_common->getConfValue("web_server","ip");
      QString port=m_common->getConfValue("web_server","port");
-
-
 
      QNetworkRequest req(QUrl(
          QString("http://%1:%2/upload").arg(ip).arg(port)
@@ -610,15 +620,12 @@ void MyFileWidget::uploadFile(UploadFileInfo* info) {
      QNetworkReply *reply = manager->post(req, multi);
      multi->setParent(reply);
 
-
      //显示进度条
      connect(reply,&QNetworkReply::uploadProgress,this,[=](qint64 bytesSent,qint64 bytesTotal){
          //bytesSent上传字节数 bytesTotal总字节数
 
          info->fileProgress->setProgress(bytesSent/1024,bytesTotal/1024);
      });
-
-
 
      connect(reply, &QNetworkReply::finished, this, [=]() {
          QByteArray resp =reply->readAll();
@@ -631,7 +638,12 @@ void MyFileWidget::uploadFile(UploadFileInfo* info) {
                                    info->fileName,
                                    "008");
 
-         } else {
+         }else if (code == "111") {
+         QMessageBox::critical(this, "账号异常", "请重新登录");
+         emit sigLoginAgain();
+         return;
+         }
+         else {
              info->UploadStatus=UPLOAD_FAILED;
              QMessageBox::warning(this, "error", info->fileName);
              m_common->writeRecord(LoginInfoInstance::getInstance()->getUser(),
@@ -644,7 +656,6 @@ void MyFileWidget::uploadFile(UploadFileInfo* info) {
          file->close();
          reply->deleteLater();
      });
-
 }
 
 

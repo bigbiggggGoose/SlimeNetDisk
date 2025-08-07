@@ -28,8 +28,6 @@ DownloadTask:: ~DownloadTask(){
 
 
 int DownloadTask::appendDownloadTask(FileInfo* fileInfo, QString filePath){
-
-
     QFile *file=new QFile(filePath);
     if(!file->open(QIODevice::WriteOnly)){
         qDebug()<<"文件打开失败";
@@ -38,11 +36,10 @@ int DownloadTask::appendDownloadTask(FileInfo* fileInfo, QString filePath){
         return -2;
     }
     DownloadFileInfo *task=new DownloadFileInfo;
-
+    QFileInfo File(filePath);
     //截取字符串
-    int pos=filePath.lastIndexOf("/",-1)+1;
     task->user=fileInfo->user;
-    task->fileName=filePath.mid(pos);
+    task->fileName=File.fileName();
     task->filePath=filePath;
 
     task->url=fileInfo->url;
@@ -68,7 +65,6 @@ DownloadFileInfo* DownloadTask::takeTask(){
     DownloadFileInfo* temp=NULL;
     if(m_fileList.size()>0){
         temp=m_fileList.at(0);
-
     }
 
     return temp;

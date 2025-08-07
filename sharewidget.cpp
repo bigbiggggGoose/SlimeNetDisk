@@ -46,6 +46,21 @@ ShareWidget::ShareWidget(QWidget *parent) :
 }
 ShareWidget::~ShareWidget()
 {
+    m_timerForDownload.stop();
+    if(m_downloadTask) {
+        delete m_downloadTask;
+        m_downloadTask = nullptr;
+    }
+
+    // 清理菜单对象
+    if(m_inmenu) {
+        delete m_inmenu;
+        m_inmenu = nullptr;
+    }
+    if(m_exmenu) {
+        delete m_exmenu;
+        m_exmenu = nullptr;
+    }
     delete ui;
 }
 
@@ -126,6 +141,7 @@ void ShareWidget::getShareFileList() {
 
     QJsonObject json;
     json.insert("user", m_loginInfo->getUser());
+    json.insert("token", m_loginInfo->getToken());
 
     QNetworkReply *reply = manager->post(request, QJsonDocument(json).toJson());
 
@@ -162,6 +178,9 @@ void ShareWidget::getShareFileList() {
             }
 
             showFileItems();
+        }else if (code == "111") {
+            QMessageBox::critical(this, "账号异常", "请重新登录");
+            emit sigLoginAgain();
         }
 
     });
@@ -215,36 +234,31 @@ void ShareWidget::showFileItems(){
         }
     }
 
-
     void ShareWidget::downloadFile(){
-        QListWidgetItem* item = ui->listWidget->currentItem();
-         if (!item) {
-             QMessageBox::warning(this, "提示", "请先选中一个文件！");
-             return;
-         }
+           QListWidgetItem* item = ui->listWidget->currentItem();
+            if (!item) {
+                QMessageBox::warning(this, "提示", "请先选中一个文件！");
+                return;
+            }
 
-         // 根据 item 获取对应的 fileInfo
-         int index = ui->listWidget->row(item);
-         if (index < 0 || index >= m_FileList.length()) {
-             QMessageBox::warning(this, "错误", "文件索引错误");
-             return;
-         }
+            // 根据 item 获取对应的 fileInfo
+            int index = ui->listWidget->row(item);
+            if (index < 0 || index >= m_FileList.length()) {
+                QMessageBox::warning(this, "错误", "文件索引错误");
+                return;
+            }
 
-         FileInfo* fileInfo = m_FileList.at(index);
-         QString url = fileInfo->url;
+            FileInfo* fileInfo = m_FileList.at(index);
+            QString url = fileInfo->url;
 
-         if (url.isEmpty()) {
-             QMessageBox::warning(this, "错误", "文件 URL 为空，无法下载！");
-             return;
-         }
+            if (url.isEmpty()) {
+                QMessageBox::warning(this, "错误", "文件 URL 为空，无法下载！");
+                return;
+            }
 
-         qDebug() << "正在打开下载链接：" << url;
-         QDesktopServices::openUrl(QUrl(url));
-    }
-
-
-
-
+            qDebug() << "正在打开下载链接：" << url;
+            QDesktopServices::openUrl(QUrl(url));
+       }
 
 
 

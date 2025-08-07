@@ -41,6 +41,11 @@ MainWindow::MainWindow(QWidget *parent)
         ui->transform_page->showPage(status);
     });
 
+    connect(ui->share_page,&ShareWidget::gotoTransmission,this,[=](TransmitStatus status){
+        ui->TransformationList->setChecked(true);
+        ui->stackedWidget->setCurrentWidget(ui->transform_page);
+        ui->transform_page->showPage(status);
+    });
 
     // 将按钮从布局中移除，使其可以自由移动
     QTimer::singleShot(100, this, [this]() {
@@ -98,7 +103,9 @@ void MainWindow::Signals(){
     connect(ui->myfile_page, &MyFileWidget::sigLoginAgain, this, [=](){
       emit sigLoginAgain();
     });
-
+    connect(ui->share_page, &ShareWidget::sigLoginAgain, this, [=](){
+      emit sigLoginAgain();
+    });
 }
 
 void MainWindow::onButtonClicked(){

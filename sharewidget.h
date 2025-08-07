@@ -6,7 +6,7 @@
 #include <QWidget>
 #include<QAction>
 #include"networkdata.h"
-#include"uploadtask.h"
+#include"downloadtask.h"
 #include<QTimer>
 namespace Ui {
 class ShareWidget;
@@ -33,8 +33,8 @@ private:
     QNetworkAccessManager *manager;
     QList<FileInfo*>  m_FileList;
     QStringList m_FileTypeList;
-    UploadTask * m_uploadTask;
-    QTimer m_timer;
+    DownloadTask * m_downloadTask;
+    QTimer m_timerForDownload;
 
 
     QAction *actionDownload;
@@ -48,12 +48,12 @@ private:
     void clearItems();
     void dealProperty();
     void getShareFileList();
-    void downloadFile();
     void showFileItems();
+    void downloadFile();
 
 signals:
     void sigLoginAgain();
-
+    void gotoTransmission(TransmitStatus status);
 private slots:
     void onRightMenu(const QPoint &pos);
 
