@@ -20,6 +20,8 @@
 #include<QHttpMultiPart>
 #include <QHttpPart>
 #include<QDesktopServices>
+#include<QInputDialog>
+
 MyFileWidget::MyFileWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::MyFileWidget)
@@ -111,11 +113,13 @@ void MyFileWidget::addMenu(){
     actionDownload=new QAction("下载",this);
     actionShare=new QAction("分享",this);
     actionDelete=new QAction("删除",this);
+    actionRename=new QAction("重命名",this);
     actionProperty=new QAction("属性",this);
 
     m_inmenu->addAction(actionDownload);
     m_inmenu->addAction(actionShare);
     m_inmenu->addAction(actionDelete);
+    m_inmenu->addAction(actionRename);
     m_inmenu->addAction(actionProperty);
 
     //外菜单：
@@ -142,6 +146,9 @@ void MyFileWidget::menuActions(){
     connect(actionDelete,&QAction::triggered,this,[=](){
         dealFile("delete");
     });
+    connect(actionRename,&QAction::triggered,this,[=](){
+            dealFile("rename");
+        });
     connect(actionProperty,&QAction::triggered,this,[=](){
         dealFile("property");
     });
@@ -387,6 +394,8 @@ void MyFileWidget:: dealFile(QString cmd){//作为分享、删除函数的载体
             shareFile(fileInfo);
             else if(cmd=="delete")
             deleteFile(fileInfo);
+            else if(cmd=="rename")
+            renameFile(fileInfo);
             else if(cmd=="property")
             showFileProperty(fileInfo);
 
@@ -462,7 +471,57 @@ QString op = (fileinfo->shareStatus==1 ? "取消分享" : "分享");
       });
 }
 
+void MyFileWidget::renameFile(FileInfo* fileInfo)
+{
+    if (fileInfo == nullptr) return;
 
+    bool ok = false;
+    QString newName = QInputDialog::getText(
+        this, QStringLiteral("重命名"),
+        QStringLiteral("新文件名："),
+        QLineEdit::Normal,
+        fileInfo->fileName,
+        &ok
+    ).trimmed();
+
+    if (!ok || newName.isEmpty() || newName == fileInfo->fileName) {
+        return;
+    }
+
+    QNetworkRequest request;
+    QString ip   = m_common->getConfValue("web_server","ip");
+    QString port = m_common->getConfValue("web_server","port");
+    QString url  = QString("http://%1:%2/dealfile/rename").arg(ip).arg(port);
+    request.setUrl(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/json"));
+
+    QJsonObject params;
+    params.insert("user",  m_loginInfo->getUser());
+    params.insert("token", m_loginInfo->getToken());
+    params.insert("filename", fileInfo->fileName);
+    params.insert("md5", fileInfo->md5);
+    params.insert("new_name", newName);
+
+    QNetworkReply* reply = manager->post(request, QJsonDocument(params).toJson());
+
+    connect(reply, &QNetworkReply::finished, this, [=]() {
+        QByteArray data = reply->readAll();
+        QString code = NetworkData::getCode(data);
+
+        if (code == "016") {
+            QMessageBox::information(this, QStringLiteral("提示"), QStringLiteral("重命名成功"));
+            getMyFileCount();
+        } else if (code == "015") {
+            QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("同目录已存在同名文件"));
+        } else if (code == "111") {
+            QMessageBox::critical(this, QStringLiteral("账号异常"), QStringLiteral("请重新登录"));
+            emit sigLoginAgain();
+        } else {
+            QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("重命名失败"));
+        }
+        reply->deleteLater();
+    });
+}
 
 void MyFileWidget::deleteFile(FileInfo *fileinfo){
     QNetworkRequest request;

@@ -52,6 +52,7 @@ private:
     QAction *actionDesc;
     QAction *actionRefresh;
     QAction *actionUpload;
+    QAction *actionRename;
 
     void initListWidget();
     void addMenu();
@@ -65,6 +66,7 @@ private:
     void clearFileList();
     void shareFile(FileInfo *fileinfo);
     void deleteFile(FileInfo *fileInfo);
+    void renameFile(FileInfo *fileInfo);
     void addUploadFiles();
     void uploadFile(UploadFileInfo* info);
     void showFileProperty(FileInfo *fileInfo);

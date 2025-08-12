@@ -441,3 +441,58 @@ class FileToggleShare(Resource):
             return {"code":"011","msg":"database error"}, 500
         finally:
             cur.close() 
+
+class ItemRename(Resource):
+    def post(self):
+        try:
+            data = request.get_json(force=True)
+            user = data.get('user')
+            token = data.get('token')
+            filename = data.get('filename')
+            md5 = data.get('md5')
+            new_name = data.get('new_name')
+
+            # Token验证
+            if not verify_token(token):
+                return {'code': '111', 'msg': 'token invalid'}, 401
+
+            if not all([user, filename, md5, new_name]):
+                return {'code': '017', 'msg': 'missing parameters'}, 400
+
+            conn = mysql.connection
+            cur = conn.cursor()
+            try:
+                # 用户ID
+                cur.execute("SELECT id FROM user_info WHERE user_name=%s", (user,))
+                urow = cur.fetchone()
+                if not urow:
+                    return {'code': '017', 'msg': 'user not found'}, 404
+                uid = urow[0]
+
+                # 查找目标文件当前父目录（若你有 parent_id 列，这里应一并取出以做同目录重名校验；
+                # 若当前模型无目录概念，则按 user 范围做唯一约束）
+                # 简化：仅校验同用户下是否已存在同名
+                cur.execute(
+                    "SELECT COUNT(*) FROM file_info WHERE user_id=%s AND file_name=%s",
+                    (uid, new_name)
+                )
+                exists = cur.fetchone()[0]
+                if exists:
+                    return {'code': '015', 'msg': 'name exists'}
+
+                # 执行重命名，通过 md5+user 唯一定位
+                cur.execute(
+                    "UPDATE file_info SET file_name=%s WHERE user_id=%s AND md5=%s",
+                    (new_name, uid, md5)
+                )
+                if cur.rowcount == 0:
+                    return {'code': '017', 'msg': 'rename failed'}
+                conn.commit()
+                return {'code': '016', 'msg': 'rename success'}
+            except Exception as e:
+                conn.rollback()
+                return {'code': '017', 'msg': f'error: {str(e)}'}, 500
+            finally:
+                cur.close()
+        except Exception as e:
+            return {'code': '017', 'msg': 'internal error'}, 500

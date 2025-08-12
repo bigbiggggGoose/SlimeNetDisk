@@ -16,7 +16,8 @@ mysql = MySQL(app)
 api = Api(app) 
 
 from routes.auth import UserRegister, UserLogin
-from routes.file import FileCount, FileList, FastUpload, FileUpload, FileShare, FileDelete
+from routes.file import FileCount, FileList, FastUpload, FileUpload, FileShare, FileDelete, ItemRename
+
 
 # 将 mysql 对象传递给路由模块
 import routes.auth as auth
@@ -34,6 +35,8 @@ api.add_resource(file.FileShare, '/dealfile/share')
 api.add_resource(file.FileDelete, '/dealfile/del')
 api.add_resource(ShareList, '/sharelist')
 api.add_resource(file.FileToggleShare, '/dealfile/toggle_share')
+api.add_resource(ItemRename, '/dealfile/rename')
+
 
 @app.route('/uploads/<path:filename>')
 def uploaded_file(filename):
